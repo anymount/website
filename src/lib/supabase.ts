@@ -31,24 +31,47 @@ export const createTestNotification = async () => {
   return data;
 };
 
-// Tipos para as tabelas do Supabase
-export type Group = {
+export interface Review {
+  user_name: string;
+  rating: number;
+  comment?: string;
+}
+
+export interface Group {
   id: string;
+  created_at: string;
   name: string;
   description: string;
   long_description?: string;
+  category: string;
+  image_url: string;
   members: number;
   price: number;
-  image_url: string;
-  category: string;
-  created_at: string;
   content_count?: string;
   telegram_link: string;
   active: boolean;
-  group_features?: GroupFeature[];
-  group_reviews?: GroupReview[];
-};
+  group_reviews?: Review[];
+}
 
+export interface Purchase {
+  id: string;
+  created_at: string;
+  user_id: string;
+  group_id: string;
+  status: 'pending' | 'completed' | 'failed';
+  payment_intent?: string;
+  amount: number;
+  group?: Group;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  created_at: string;
+  role: 'user' | 'admin';
+}
+
+// Tipos para as tabelas do Supabase
 export type GroupFeature = {
   id: string;
   group_id: string;
