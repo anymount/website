@@ -8,20 +8,7 @@ export const useGroups = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('groups')
-        .select(`
-          *,
-          group_features (
-            id,
-            feature
-          ),
-          group_reviews (
-            id,
-            user_name,
-            rating,
-            comment,
-            created_at
-          )
-        `)
+        .select('*')
         .eq('active', true);
       
       if (error) throw error;
@@ -36,20 +23,7 @@ export const useGroup = (id: string) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('groups')
-        .select(`
-          *,
-          group_features (
-            id,
-            feature
-          ),
-          group_reviews (
-            id,
-            user_name,
-            rating,
-            comment,
-            created_at
-          )
-        `)
+        .select('*')
         .eq('id', id)
         .single();
       
@@ -85,14 +59,19 @@ export const useUpdateGroup = () => {
 
   return useMutation({
     mutationFn: async ({ id, ...updates }: Partial<Group> & { id: string }) => {
+      const { created_at, group_reviews, ...updateData } = updates;
+
       const { data, error } = await supabase
         .from('groups')
-        .update(updates)
+        .update(updateData)
         .eq('id', id)
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erro ao atualizar grupo:', error);
+        throw error;
+      }
       return data;
     },
     onSuccess: (_, variables) => {

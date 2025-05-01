@@ -42,16 +42,14 @@ export interface Group {
   created_at: string;
   name: string;
   description: string;
-  long_description?: string;
-  category: string;
-  image_url: string;
   members: number;
   price: number;
-  content_count?: string;
-  telegram_link: string;
+  image_url: string;
+  link: string;
   active: boolean;
+  featured: boolean;
+  category: string;
   rating: number;
-  group_reviews?: Review[];
 }
 
 export interface Purchase {

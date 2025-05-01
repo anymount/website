@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -41,6 +41,7 @@ const GroupForm = ({ group }: GroupFormProps) => {
   const createGroup = useCreateGroup();
   const updateGroup = useUpdateGroup();
   const [isUploading, setIsUploading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string>(group?.image_url || '');
 
   const form = useForm<GroupFormData>({
@@ -59,6 +60,24 @@ const GroupForm = ({ group }: GroupFormProps) => {
       rating: group?.rating || 0,
     },
   });
+
+  useEffect(() => {
+    if (group) {
+      form.reset({
+        name: group.name,
+        description: group.description,
+        members: group.members,
+        price: group.price,
+        rating: group.rating,
+        image_url: group.image_url,
+        link: group.link,
+        active: group.active,
+        featured: group.featured,
+        category: group.category
+      });
+      setPreviewUrl(group.image_url);
+    }
+  }, [group, form]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -185,18 +204,19 @@ WITH CHECK (bucket_id = 'groups' AND auth.role() = 'authenticated');`,
 
   const onSubmit = async (data: GroupFormData) => {
     try {
-      // Garantir que todos os campos obrigatórios estejam preenchidos
+      setIsLoading(true);
+
       const groupData = {
-        ...data,
         name: data.name,
         description: data.description,
-        category: data.category,
+        members: Number(data.members),
+        price: Number(data.price),
+        rating: Number(data.rating),
         image_url: data.image_url,
-        members: data.members,
-        price: data.price,
-        telegram_link: data.telegram_link,
+        link: data.link,
         active: data.active,
-        rating: data.rating
+        featured: data.featured,
+        category: data.category
       };
 
       if (group) {
@@ -218,9 +238,11 @@ WITH CHECK (bucket_id = 'groups' AND auth.role() = 'authenticated');`,
       console.error('Erro ao salvar grupo:', error);
       toast({
         title: "Erro",
-        description: "Erro ao salvar grupo",
+        description: "Erro ao salvar grupo. Verifique os dados e tente novamente.",
         variant: "destructive"
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
