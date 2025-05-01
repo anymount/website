@@ -1,0 +1,80 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Dark theme by default for adult content */
+    --background: 250 30% 10%; /* dark bg */
+    --foreground: 210 40% 98%; /* light text */
+
+    --card: 250 30% 13%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 250 30% 13%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 267 70% 68%; /* main purple */
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 267 27% 38%; /* secondary purple */
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 250 30% 20%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 267 95% 63%; /* vivid accent */
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 250 30% 20%;
+    --input: 250 30% 20%;
+    --ring: 267 70% 68%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 250 30% 8%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 267 70% 68%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 250 30% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 250 30% 15%;
+    --sidebar-ring: 267 70% 68%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom styles */
+.group-card {
+  @apply relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+}
+
+.group-card::before {
+  content: '';
+  @apply absolute inset-0 bg-adult-accent opacity-0 transition-opacity duration-300 pointer-events-none;
+}
+
+.group-card:hover::before {
+  @apply opacity-10;
+}
+
+.price-tag {
+  @apply inline-block px-3 py-1 bg-adult-accent bg-opacity-90 text-white rounded-md font-medium;
+}
+
+.badge-18 {
+  @apply inline-flex items-center justify-center w-6 h-6 bg-adult-magenta rounded-full text-xs font-bold text-white;
+}
