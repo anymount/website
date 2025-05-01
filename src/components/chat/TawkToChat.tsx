@@ -13,12 +13,6 @@ const TawkToChat = () => {
     window.Tawk_API = window.Tawk_API || {};
     window.Tawk_LoadStart = new Date();
 
-    // Configurações de posicionamento
-    window.Tawk_API.customStyle = {
-      zIndex: 1000,
-      position: 'left' // Pode ser 'left' ou 'right'
-    };
-
     // Carrega o script do Tawk.to
     const script = document.createElement('script');
     script.async = true;
@@ -29,6 +23,15 @@ const TawkToChat = () => {
     // Adiciona o script ao documento
     const firstScript = document.getElementsByTagName('script')[0];
     firstScript?.parentNode?.insertBefore(script, firstScript);
+
+    // Configura a posição após o carregamento
+    script.onload = () => {
+      if (window.Tawk_API) {
+        window.Tawk_API.onLoad = function() {
+          window.Tawk_API.setPosition('left');
+        };
+      }
+    };
 
     // Cleanup quando o componente for desmontado
     return () => {
