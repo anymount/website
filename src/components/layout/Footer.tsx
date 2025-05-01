@@ -29,7 +29,6 @@ const Footer = () => {
             <h4 className="font-medium text-white mb-4">Links Rápidos</h4>
             <ul className="space-y-2 text-sm">
               <li><Link to="/" className="text-gray-300 hover:text-adult-accent">Início</Link></li>
-              <li><Link to="/pricing" className="text-gray-300 hover:text-adult-accent">Preços</Link></li>
               <li><Link to="/about" className="text-gray-300 hover:text-adult-accent">Sobre Nós</Link></li>
             </ul>
           </div>
