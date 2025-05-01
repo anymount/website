@@ -6,26 +6,26 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { useCreateGroup, useUpdateGroup } from '@/hooks/useGroups';
 import { supabase } from '@/lib/supabase';
 import type { Group } from '@/lib/supabase';
 import { Loader2, Upload } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 
 const BUCKET_NAME = 'groups';
 
 const groupSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
   description: z.string().min(10, 'Descrição deve ter pelo menos 10 caracteres'),
-  long_description: z.string().optional(),
   category: z.string().min(1, 'Categoria é obrigatória'),
   image_url: z.string(),
   members: z.coerce.number().min(0, 'Número de membros deve ser positivo'),
   price: z.coerce.number().min(0, 'Preço deve ser positivo'),
-  content_count: z.string().optional(),
-  telegram_link: z.string().url('URL do Telegram inválida'),
+  telegram_link: z.string().url('URL do grupo inválida'),
   active: z.boolean().default(true),
+  featured: z.boolean().default(false),
   rating: z.coerce.number().min(0, 'Nota deve ser entre 0 e 5').max(5, 'Nota deve ser entre 0 e 5').default(0),
 });
 
@@ -49,14 +49,13 @@ const GroupForm = ({ group }: GroupFormProps) => {
     defaultValues: {
       name: group?.name || '',
       description: group?.description || '',
-      long_description: group?.long_description || '',
       category: group?.category || '',
       image_url: group?.image_url || '',
       members: group?.members || 0,
       price: group?.price || 0,
-      content_count: group?.content_count || '',
       telegram_link: group?.telegram_link || '',
       active: group?.active ?? true,
+      featured: group?.featured ?? false,
       rating: group?.rating || 0,
     },
   });
@@ -70,7 +69,7 @@ const GroupForm = ({ group }: GroupFormProps) => {
         price: group.price,
         rating: group.rating,
         image_url: group.image_url,
-        link: group.link,
+        telegram_link: group.telegram_link,
         active: group.active,
         featured: group.featured,
         category: group.category
@@ -213,7 +212,7 @@ WITH CHECK (bucket_id = 'groups' AND auth.role() = 'authenticated');`,
         price: Number(data.price),
         rating: Number(data.rating),
         image_url: data.image_url,
-        link: data.link,
+        telegram_link: data.telegram_link,
         active: data.active,
         featured: data.featured,
         category: data.category
@@ -308,12 +307,12 @@ WITH CHECK (bucket_id = 'groups' AND auth.role() = 'authenticated');`,
 
           <FormField
             control={form.control}
-            name="content_count"
+            name="telegram_link"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Quantidade de Conteúdo</FormLabel>
+                <FormLabel>Link do Telegram</FormLabel>
                 <FormControl>
-                  <Input placeholder="Ex: +1000 fotos" {...field} />
+                  <Input placeholder="https://t.me/..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -343,14 +342,42 @@ WITH CHECK (bucket_id = 'groups' AND auth.role() = 'authenticated');`,
 
           <FormField
             control={form.control}
-            name="telegram_link"
+            name="active"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Link do Telegram</FormLabel>
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                  <FormLabel className="text-base">Ativo</FormLabel>
+                  <FormDescription>
+                    Grupo disponível para visualização e compra
+                  </FormDescription>
+                </div>
                 <FormControl>
-                  <Input placeholder="https://t.me/..." {...field} />
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </FormControl>
-                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="featured"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                  <FormLabel className="text-base">Destaque</FormLabel>
+                  <FormDescription>
+                    Exibir grupo na seção de destaques
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
               </FormItem>
             )}
           />
@@ -364,20 +391,6 @@ WITH CHECK (bucket_id = 'groups' AND auth.role() = 'authenticated');`,
               <FormLabel>Descrição Curta</FormLabel>
               <FormControl>
                 <Textarea placeholder="Descrição breve do grupo" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="long_description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Descrição Longa</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Descrição detalhada do grupo" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -45,12 +45,15 @@ export interface Group {
   members: number;
   price: number;
   image_url: string;
-  link: string;
+  telegram_link: string;
   active: boolean;
   featured: boolean;
   category: string;
   rating: number;
 }
+
+export type CreateGroupInput = Omit<Group, 'id' | 'created_at'>;
+export type UpdateGroupInput = Partial<CreateGroupInput> & { id: string };
 
 export interface Purchase {
   id: string;
