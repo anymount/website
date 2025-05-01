@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,15 +11,9 @@ import { useToast } from '@/hooks/use-toast';
 import { useCreateGroup, useUpdateGroup } from '@/hooks/useGroups';
 import { supabase } from '@/lib/supabase';
 import type { Group } from '@/lib/supabase';
-import { Loader2, Upload, Plus, Trash2 } from 'lucide-react';
+import { Loader2, Upload } from 'lucide-react';
 
 const BUCKET_NAME = 'groups';
-
-const reviewSchema = z.object({
-  user_name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
-  rating: z.coerce.number().min(1, 'Avaliação deve ser entre 1 e 5').max(5, 'Avaliação deve ser entre 1 e 5'),
-  comment: z.string().optional(),
-});
 
 const groupSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
@@ -32,7 +26,7 @@ const groupSchema = z.object({
   content_count: z.string().optional(),
   telegram_link: z.string().url('URL do Telegram inválida'),
   active: z.boolean().default(true),
-  group_reviews: z.array(reviewSchema).optional(),
+  rating: z.coerce.number().min(0, 'Nota deve ser entre 0 e 5').max(5, 'Nota deve ser entre 0 e 5').default(0),
 });
 
 type GroupFormData = z.infer<typeof groupSchema>;
@@ -62,7 +56,7 @@ const GroupForm = ({ group }: GroupFormProps) => {
       content_count: group?.content_count || '',
       telegram_link: group?.telegram_link || '',
       active: group?.active ?? true,
-      group_reviews: group?.group_reviews || [],
+      rating: group?.rating || 0,
     },
   });
 
@@ -189,19 +183,6 @@ WITH CHECK (bucket_id = 'groups' AND auth.role() = 'authenticated');`,
     }
   };
 
-  const addReview = () => {
-    const currentReviews = form.getValues('group_reviews') || [];
-    form.setValue('group_reviews', [
-      ...currentReviews,
-      { user_name: '', rating: 5, comment: '' }
-    ]);
-  };
-
-  const removeReview = (index: number) => {
-    const currentReviews = form.getValues('group_reviews') || [];
-    form.setValue('group_reviews', currentReviews.filter((_, i) => i !== index));
-  };
-
   const onSubmit = async (data: GroupFormData) => {
     try {
       // Garantir que todos os campos obrigatórios estejam preenchidos
@@ -215,7 +196,7 @@ WITH CHECK (bucket_id = 'groups' AND auth.role() = 'authenticated');`,
         price: data.price,
         telegram_link: data.telegram_link,
         active: data.active,
-        group_reviews: data.group_reviews || []
+        rating: data.rating
       };
 
       if (group) {
@@ -319,6 +300,27 @@ WITH CHECK (bucket_id = 'groups' AND auth.role() = 'authenticated');`,
 
           <FormField
             control={form.control}
+            name="rating"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nota do Grupo (0-5)</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    step="0.1" 
+                    min="0" 
+                    max="5" 
+                    placeholder="4.7" 
+                    {...field} 
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="telegram_link"
             render={({ field }) => (
               <FormItem>
@@ -380,84 +382,14 @@ WITH CHECK (bucket_id = 'groups' AND auth.role() = 'authenticated');`,
             />
           </div>
           {previewUrl && (
-            <div className="relative w-full h-48 rounded-lg overflow-hidden">
+            <div className="relative w-full h-64 rounded-lg overflow-hidden">
               <img
                 src={previewUrl}
                 alt="Preview"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain bg-gray-800"
               />
             </div>
           )}
-        </div>
-
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <FormLabel>Avaliações</FormLabel>
-            <Button type="button" variant="outline" size="sm" onClick={addReview}>
-              <Plus className="w-4 h-4 mr-2" />
-              Adicionar Avaliação
-            </Button>
-          </div>
-
-          {form.watch('group_reviews')?.map((_, index) => (
-            <div key={index} className="space-y-4 p-4 bg-gray-800 rounded-lg">
-              <div className="flex justify-between items-center">
-                <h4 className="text-sm font-medium text-white">Avaliação {index + 1}</h4>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => removeReview(index)}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name={`group_reviews.${index}.user_name`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nome do Usuário</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Nome do usuário" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name={`group_reviews.${index}.rating`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Avaliação (1-5)</FormLabel>
-                      <FormControl>
-                        <Input type="number" min="1" max="5" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name={`group_reviews.${index}.comment`}
-                  render={({ field }) => (
-                    <FormItem className="md:col-span-2">
-                      <FormLabel>Comentário</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="Comentário opcional" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-          ))}
         </div>
 
         <div className="flex justify-end gap-4">

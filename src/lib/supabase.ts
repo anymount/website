@@ -50,6 +50,7 @@ export interface Group {
   content_count?: string;
   telegram_link: string;
   active: boolean;
+  rating: number;
   group_reviews?: Review[];
 }
 
