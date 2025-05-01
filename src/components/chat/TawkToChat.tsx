@@ -13,6 +13,12 @@ const TawkToChat = () => {
     window.Tawk_API = window.Tawk_API || {};
     window.Tawk_LoadStart = new Date();
 
+    // Configurações de posicionamento
+    window.Tawk_API.customStyle = {
+      zIndex: 1000,
+      position: 'left' // Pode ser 'left' ou 'right'
+    };
+
     // Carrega o script do Tawk.to
     const script = document.createElement('script');
     script.async = true;
