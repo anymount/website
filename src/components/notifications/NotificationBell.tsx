@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bell } from 'lucide-react';
+import { Bell, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Popover,
@@ -13,6 +13,7 @@ interface Notification {
   id: string;
   title: string;
   message: string;
+  link?: string;
   created_at: string;
   read: boolean;
 }
@@ -63,6 +64,13 @@ const NotificationBell = () => {
     }
   };
 
+  const handleNotificationClick = (notification: Notification) => {
+    markAsRead(notification.id);
+    if (notification.link) {
+      window.open(notification.link, '_blank');
+    }
+  };
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
@@ -95,7 +103,7 @@ const NotificationBell = () => {
                   className={`p-4 transition-colors hover:bg-adult-purple hover:bg-opacity-10 cursor-pointer ${
                     !notification.read ? 'bg-adult-purple bg-opacity-5' : ''
                   }`}
-                  onClick={() => markAsRead(notification.id)}
+                  onClick={() => handleNotificationClick(notification)}
                 >
                   <h4 className="text-sm font-medium text-white mb-1">
                     {notification.title}
@@ -103,6 +111,12 @@ const NotificationBell = () => {
                   <p className="text-sm text-gray-400">
                     {notification.message}
                   </p>
+                  {notification.link && (
+                    <div className="mt-2 flex items-center text-adult-accent text-xs hover:underline">
+                      <ExternalLink className="h-3 w-3 mr-1" />
+                      Clique para acessar
+                    </div>
+                  )}
                   <span className="text-xs text-gray-500 mt-2 block">
                     {new Date(notification.created_at).toLocaleDateString('pt-BR', {
                       day: '2-digit',
