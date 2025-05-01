@@ -1,7 +1,6 @@
 import React from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import TawkToChat from '../chat/TawkToChat';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -15,7 +14,6 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         {children}
       </main>
       <Footer />
-      <TawkToChat />
     </div>
   );
 };
