@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="bg-adult-dark border-t border-adult-purple border-opacity-20 text-white">
       <div className="container mx-auto px-4 py-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-xl font-semibold mb-4">Asmodelos</h3>
             <p className="text-sm text-gray-300 mb-4">O melhor marketplace para grupos exclusivos de Telegram para adultos.</p>
@@ -26,22 +26,11 @@ const Footer = () => {
           </div>
           
           <div>
-            <h4 className="font-medium text-white mb-4">Categorias</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link to="/categories/photos" className="text-gray-300 hover:text-adult-accent">Grupos de Fotos</Link></li>
-              <li><Link to="/categories/videos" className="text-gray-300 hover:text-adult-accent">Grupos de Vídeos</Link></li>
-              <li><Link to="/categories/dating" className="text-gray-300 hover:text-adult-accent">Grupos de Namoro</Link></li>
-              <li><Link to="/categories/premium" className="text-gray-300 hover:text-adult-accent">Conteúdo Premium</Link></li>
-            </ul>
-          </div>
-          
-          <div>
             <h4 className="font-medium text-white mb-4">Links Rápidos</h4>
             <ul className="space-y-2 text-sm">
               <li><Link to="/" className="text-gray-300 hover:text-adult-accent">Início</Link></li>
               <li><Link to="/pricing" className="text-gray-300 hover:text-adult-accent">Preços</Link></li>
               <li><Link to="/about" className="text-gray-300 hover:text-adult-accent">Sobre Nós</Link></li>
-              <li><Link to="/contact" className="text-gray-300 hover:text-adult-accent">Contato</Link></li>
             </ul>
           </div>
           
