@@ -7,6 +7,7 @@ import HowItWorks from '@/components/sections/HowItWorks';
 import FeaturesList from '@/components/sections/FeaturesList';
 import CallToAction from '@/components/sections/CallToAction';
 import AgeVerificationDialog from '@/components/ui/AgeVerificationDialog';
+import PurchaseNotification from '@/components/notifications/PurchaseNotification';
 import { createTestNotification } from '@/lib/supabase';
 
 const Index = () => {
@@ -52,6 +53,7 @@ const Index = () => {
         <HowItWorks />
         <FeaturesList />
         <CallToAction />
+        <PurchaseNotification />
       </MainLayout>
     </>
   );
