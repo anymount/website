@@ -16,7 +16,7 @@ export const createTestNotification = async () => {
     .insert({
       title: '✨ Bem-vindo ao Asmodelos!',
       message: 'Descubra os melhores grupos premium do Telegram. Aproveite nossos preços especiais de lançamento! 🔥',
-      link: 'https://t.me/asmodelos',
+      link: 'https://t.me/asdanadas_free',
       type: 'info',
       active: true
     })

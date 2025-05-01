@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import Hero from '@/components/sections/Hero';
 import FeaturedGroups from '@/components/sections/FeaturedGroups';
-import Categories from '@/components/sections/Categories';
 import HowItWorks from '@/components/sections/HowItWorks';
 import FeaturesList from '@/components/sections/FeaturesList';
 import CallToAction from '@/components/sections/CallToAction';
@@ -49,7 +48,6 @@ const Index = () => {
       <MainLayout>
         <Hero />
         <FeaturedGroups />
-        <Categories />
         <HowItWorks />
         <FeaturesList />
         <CallToAction />
