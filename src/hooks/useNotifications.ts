@@ -32,7 +32,8 @@ export const useNotifications = () => {
       
       console.log('Notificações encontradas:', data);
       return data as Notification[];
-    }
+    },
+    refetchOnWindowFocus: true,
   });
 };
 
