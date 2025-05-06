@@ -15,6 +15,7 @@ import EditGroup from "./pages/admin/EditGroup";
 import AdminNotifications from "./pages/admin/AdminNotifications";
 import AdminSettings from "./pages/admin/AdminSettings";
 import NotFound from "./pages/NotFound";
+import Terms from "./pages/Terms";
 
 const App = () => (
   <TooltipProvider>
@@ -26,6 +27,7 @@ const App = () => (
         <Route path="/groups" element={<Groups />} />
         <Route path="/groups/:id" element={<GroupDetails />} />
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/terms" element={<Terms />} />
         
         {/* Rota de redirecionamento */}
         <Route path="/admin-login" element={<Navigate to="/admin/login" replace />} />
