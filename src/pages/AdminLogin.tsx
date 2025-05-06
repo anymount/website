@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,7 +11,16 @@ const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [remember, setRemember] = useState(() => {
+    // Verifica se já existe email salvo
+    return !!localStorage.getItem('adminRememberEmail');
+  });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('adminRememberEmail');
+    if (savedEmail) setEmail(savedEmail);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +40,11 @@ const AdminLogin = () => {
         // Salvar a sessão
         sessionStorage.setItem('isAdminLoggedIn', 'true');
         sessionStorage.setItem('adminUser', JSON.stringify(data.user));
-        
+        if (remember) {
+          localStorage.setItem('adminRememberEmail', email);
+        } else {
+          localStorage.removeItem('adminRememberEmail');
+        }
         toast.success('Login realizado com sucesso!');
         navigate('/admin');
       }
@@ -76,6 +89,17 @@ const AdminLogin = () => {
               placeholder="Digite sua senha"
               required
             />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <input
+              id="remember"
+              type="checkbox"
+              checked={remember}
+              onChange={e => setRemember(e.target.checked)}
+              className="accent-adult-accent"
+            />
+            <Label htmlFor="remember" className="text-gray-300 cursor-pointer select-none">Lembrar login</Label>
           </div>
           
           <Button 
