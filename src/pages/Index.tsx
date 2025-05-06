@@ -18,14 +18,6 @@ const Index = () => {
     if (!hasVerifiedAge) {
       setShowAgeVerification(true);
     }
-
-    // Mostrar notificação de boas-vindas apenas uma vez
-    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome') === 'true';
-    if (!hasSeenWelcome) {
-      createTestNotification().then(() => {
-        localStorage.setItem('hasSeenWelcome', 'true');
-      });
-    }
   }, []);
 
   const handleAgeConfirm = () => {
